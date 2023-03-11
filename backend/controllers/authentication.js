@@ -22,6 +22,7 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/profile', async (req,res) =>{
+    req.json(req.currentUser)
     try {
         //split the authorization header into bearer and token
         const [authenticationMethod, token] = req.headers.authorization.split( ' ' )
