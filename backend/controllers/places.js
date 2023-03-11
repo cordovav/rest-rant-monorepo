@@ -119,15 +119,27 @@ router.delete('/:placeId/comments/:commentId', async (req, res) => {
 
     if (isNaN(placeId)) {
         res.status(404).json({ message: `Invalid id "${placeId}"` })
-    } else if (isNaN(commentId)) {
+    } 
+    
+    else if (isNaN(commentId)) {
         res.status(404).json({ message: `Invalid id "${commentId}"` })
-    } else {
+    } 
+    
+    else {
         const comment = await Comment.findOne({
             where: { commentId: commentId, placeId: placeId }
         })
+
         if (!comment) {
             res.status(404).json({ message: `Could not find comment with id "${commentId}" for place with id "${placeId}"` })
-        } else {
+        } 
+        
+        else if (comment.authorId !== req.currentUser?.userId) {
+            res.status(403).json({
+                message: `Your do not have permission to delete comment "${comment.commentId}"`})
+            } 
+            
+            else {
             await comment.destroy()
             res.json(comment)
         }
